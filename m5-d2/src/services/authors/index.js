@@ -32,9 +32,10 @@ authorsRouter.get("/:authorId", (request, response) => {
 authorsRouter.post("/", (request, response) => {
     const newAuthor = {...request.body, id: uniqid()}
     // console.log(newAuthor)
-
+    const authors = JSON.parse(fs.readFileSync(jsonFilePath))
+    authors.push(newAuthor)
     fs.writeFileSync(jsonFilePath, JSON.stringify(authors))
-    response.status(201).send({id: newAuthor.id})
+    response.status(201).send(newAuthor)
 })
 
 // Route n.1 -> PUT /authors/123
@@ -44,7 +45,10 @@ authorsRouter.put("/:authorId", (request, response) => {
 
 // Route n.1 -> DELETE /authors/123
 authorsRouter.delete("/:authorId", (request, response) => {
-    response.send("I am the DELETE route")
+    const authors = JSON.parse(fs.readFileSync(jsonFilePath))
+    const remainingAuthors = authors.filter(author => author.id !== request.params.authorId)
+    fs.writeFileSync(jsonFilePath, JSON.stringify(remainingAuthors))
+    response.status(204).send()
 })
 
 export default authorsRouter
