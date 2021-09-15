@@ -2,6 +2,7 @@ import express from "express";
 import authorsRouter from "./services/authors/index.js";
 import blogPostsRouter from "./services/posts/index.js";
 import listEndpoints from "express-list-endpoints";
+import { badRequest, forbidden, notFound, serverError } from "./errorHandlers.js";
 // import cors from "cors";
 
 
@@ -17,6 +18,10 @@ server.use("/blogPosts", blogPostsRouter)
 console.table(listEndpoints(server))
 
 // error handlers
+server.use(badRequest)
+server.use(forbidden)
+server.use(notFound)
+server.use(serverError)
 
 
 server.listen(port, () => {

@@ -1,8 +1,3 @@
-// server.use(badRequestErrorHandler)
-// server.use(notFoundErrorHandler)
-// server.use(forbiddenErrorHandler)
-// server.use(genericServerErrorHandler)
-
 export const badRequest = (error, request, response, next) => {
     if(error === 400){
         response.status(400).send()
@@ -22,7 +17,7 @@ export const forbidden = (error, request, response, next) => {
 
 export const notFound = (error, request, response, next) => {
     if(error === 404){
-        response.status(404).send()
+        response.status(404).send(err.message)
     } else {
         next(error)
     }
