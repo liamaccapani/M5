@@ -7,64 +7,64 @@ import express, { response } from "express";
 const postsJsonPath = join(dirname(fileURLToPath(import.meta.url)), "posts.json")
 
 const getPosts = () => JSON.parse(fs.readFileSync(postsJsonPath))
-const writePosts = (contentData) => fs.writeFileSync(postsJsonPath, JSON.stringify(contentData))
+const rewritePosts = (contentData) => fs.writeFileSync(postsJsonPath, JSON.stringify(contentData))
 const blogPostsRouter = express.Router()
 
-blogPostsRouter.get("/", (req, res) => {
+blogPostsRouter.get("/", (req, res, next) => {
     try {
         const posts = getPosts()
         res.send(posts) 
     } catch (error) {
-        
+        next(error)
     }
 })
 
-blogPostsRouter.get("/:postId", (req, res) => {
+blogPostsRouter.get("/:postId", (req, res, next) => {
     try {
         const posts = getPosts()
         const post = posts.find(post => post.id === req.params.postId)
         res.send(post)
 
     } catch (error) {
-        
+        next(error)
     }
 })
 
-blogPostsRouter.post("/", (req, res) => {
+blogPostsRouter.post("/", (req, res, next) => {
     try {
         const posts = getPosts()
         const newPost = {...req.body, _id:uniqid(), createdAt: new Date(), "content":"HTML"}
         posts.push(newPost)
-        writePosts(posts)
+        rewritePosts(posts)
         res.status(201).send("Post created")
     } catch (error) {
-        
+        next(error)
     }
 
 })
 
-blogPostsRouter.put("/:postId", (req, res) => {
+blogPostsRouter.put("/:postId", (req, res, next) => {
     try {
         const posts = getPosts()
         const index = posts.findIndex(post => post._id === req.params.postId)
         const updatedPost = { ...posts[index], ...req.body }
         posts[index] = updatedPost
-        writePosts(posts)
+        rewritePosts(posts)
         res.send(updatedPost)   
     } catch (error) {
-        
+        next(error)
     }
 })
 
 
-blogPostsRouter.delete("/:postId", (req, res) => {
+blogPostsRouter.delete("/:postId", (req, res, next) => {
     try {
         const posts = getPosts()
         const remainingPosts = posts.filter(post => post._id !== req.params.postId)
-        writePosts(remainingPosts)
+        rewritePosts(remainingPosts)
         res.status(204).send()   
     } catch (error) {
-        
+        next(error)
     }
 })
 

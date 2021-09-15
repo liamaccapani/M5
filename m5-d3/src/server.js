@@ -16,6 +16,8 @@ server.use("/authors", authorsRouter)
 server.use("/blogPosts", blogPostsRouter)
 console.table(listEndpoints(server))
 
+// error handlers
+
 
 server.listen(port, () => {
     console.log(`Server running on ${port}`)
