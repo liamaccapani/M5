@@ -4,13 +4,15 @@ import { fileURLToPath } from "url";
 import fs from "fs-extra";
 
 // import { readJSON, writeJSON } from "fs-extra"; NO!
-const { readJSON, writeJSON } = fs
+const { readJSON, writeJSON, writeFile} = fs
 
 // need to go a folder up -> data (sibling folder) + join it with authors / posts files
-const dataPath = join(dirname(fileURLToPath(import.meta.url)), "../data")
+const dataFolderPath = join(dirname(fileURLToPath(import.meta.url)), "../data")
 
-const authorsJson = join(dataPath, "authors.json")
-const postsJson = join(dataPath, "posts.json")
+const publicFolderPath = join(process.cwd(), "public")
+
+const authorsJson = join(dataFolderPath, "authors.json")
+const postsJson = join(dataFolderPath, "posts.json")
 
 
 
@@ -21,3 +23,4 @@ export const saveAuthors = (fileContent) => writeJSON(authorsJson, fileContent)
 export const getPosts = () => readJSON(postsJson)
 export const savePosts = (fileContent) => writeJSON(postsJson, fileContent)
 
+export const saveAuthorPicture = (name, bufferContent) => writeFile(join(publicFolderPath, name), bufferContent)
