@@ -23,7 +23,7 @@ blogPostsRouter.get("/:postId", async (req, res, next) => {
     // find author of post and attach the post
     const authorId = post.author._id;
     //console.log(authorId)
-    if (post && authorId) {
+    if (post || authorId) {
       res.send(post);
     } else {
       next(createHttpError(404, `Invalid post id or author id`));
@@ -43,8 +43,8 @@ blogPostsRouter.post("/", async (req, res, next) => {
     const newPost = {
       ...req.body,
       _id: uniqid(),
-      createdAt: new Date(),
-      content: "HTML",
+      createdAt: new Date()
+      // content: "HTML",
     };
     const posts = await getPosts();
     posts.push(newPost);

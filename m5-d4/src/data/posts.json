@@ -1,1 +1,19 @@
-[]
+[
+    {
+        "category": "ARTICLE CATEGORY",
+        "title": "ARTICLE TITLE",
+        "cover": "ARTICLE COVER (IMAGE LINK)",
+        "readTime": {
+            "value": 4,
+            "unit": "minute"
+        },
+        "author": {
+            "name": "AUTHOR AVATAR NAME",
+            "avatar": "AUTHOR AVATAR LINK"
+        },
+        "content": "HTML",
+        "_id": "2i36coktr2b2ce",
+        "createdAt": "2021-09-19T10:13:51.901Z",
+        "modifiedAt": "2021-09-19T10:20:51.656Z"
+    }
+]
