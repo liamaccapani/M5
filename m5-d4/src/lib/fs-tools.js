@@ -24,3 +24,4 @@ export const getPosts = () => readJSON(postsJson)
 export const savePosts = (fileContent) => writeJSON(postsJson, fileContent)
 
 export const saveAuthorPicture = (name, bufferContent) => writeFile(join(publicFolderPath, name), bufferContent)
+export const saveCoverImage = (name, bufferContent) => writeFile(join(publicFolderPath, name), bufferContent)

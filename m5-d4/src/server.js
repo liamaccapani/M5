@@ -19,7 +19,7 @@ server.use(express.static(publicFolderPath))
 server.use("/authors", authorsRouter)
 server.use("/blogPosts", blogPostsRouter)
 server.use("/files", filesRouter)
-console.log(listEndpoints(server))
+// console.log(listEndpoints(server))
 
 // error handlers
 server.use(badRequest)

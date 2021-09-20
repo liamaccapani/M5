@@ -23,10 +23,7 @@ authorsRouter.get("/:authorId", async (req, res, next) => {
       res.send(author);
     } else {
       next(
-        createHttpError(
-          404,
-          `Invalid Author id, no author with _id:${req.params.authorId}`
-        )
+        createHttpError(404), `Invalid Author id, no author with _id:${req.params.authorId}`
       );
     }
   } catch (error) {
@@ -36,16 +33,16 @@ authorsRouter.get("/:authorId", async (req, res, next) => {
 
 authorsRouter.post("/", async (req, res, next) => {
   try {
-      const newAuthor = {
-        ...req.body,
-        _id: uniqid(),
-        createdAt: new Date(),
-        avatar: `https://ui-avatars.com/api/?name=${req.body.name}+${req.body.surname}`,
-      };
-      const authors = await getAuthors();
-      authors.push(newAuthor);
-      saveAuthors(authors);
-      res.status(201).send(newAuthor);
+    const newAuthor = {
+      ...req.body,
+      _id: uniqid(),
+      createdAt: new Date(),
+      avatar: `https://ui-avatars.com/api/?name=${req.body.name}+${req.body.surname}`,
+    };
+    const authors = await getAuthors();
+    authors.push(newAuthor);
+    saveAuthors(authors);
+    res.status(201).send(newAuthor);
   } catch (error) {
     next(error);
   }
@@ -70,7 +67,7 @@ authorsRouter.put("/:authorId", async (req, res, next) => {
         updatedAt: new Date(),
         _id: req.params.authorId,
       };
-      
+
       previousAuthorData = changedAuthor;
       await saveAuthors(authors);
       res.send(changedAuthor);
