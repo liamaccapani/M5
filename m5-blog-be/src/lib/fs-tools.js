@@ -17,11 +17,20 @@ const postsJson = join(dataFolderPath, "posts.json")
 
 
 // returning promises --> need to be awaited
+
+// -AUTHORS
 export const getAuthors = () => readJSON(authorsJson) 
 export const saveAuthors = (fileContent) => writeJSON(authorsJson, fileContent)
 
+
+// -POSTS
 export const getPosts = () => readJSON(postsJson)
 export const savePosts = (fileContent) => writeJSON(postsJson, fileContent)
 
+
+// FILES
+// a) AVATAR
 export const saveAuthorPicture = (name, bufferContent) => writeFile(join(publicFolderPath, name), bufferContent)
+
+// b) COVER IMG
 export const saveCoverImage = (name, bufferContent) => writeFile(join(publicFolderPath, name), bufferContent)

@@ -1,9 +1,10 @@
 import createHttpError from "http-errors";
 import express from "express";
 import multer from "multer";
-import { getPosts, savePosts, saveCoverImage } from "../../lib/fs-tools.js";
+import { getAuthors, getPosts, savePosts, saveCoverImage } from "../../lib/fs-tools.js";
 // import { getAuthors, saveAuthors } from "../../lib/fs-tools.js";
 import uniqid from "uniqid";
+import { param } from "express-validator";
 
 const blogPostsRouter = express.Router();
 
@@ -17,11 +18,13 @@ blogPostsRouter.get("/", async (req, res, next) => {
   }
 });
 
+
 blogPostsRouter.get("/:postId", async (req, res, next) => {
   try {
     const posts = await getPosts();
     const post = posts.find((post) => post._id === req.params.postId);
     
+    // const authors = await getAuthors()
     // find author of post and attach the post
     const authorId = post.author._id;
     //console.log(authorId)
@@ -34,31 +37,6 @@ blogPostsRouter.get("/:postId", async (req, res, next) => {
     next(error);
   }
 });
-
-// blogPostsRouter.post("/", multer().single("articleCover"), async (req, res, next) => {
-//   try {
-//     // const {author} = is in req.body;
-//     // read author json  find author by id
-//     // const authors = await getAuthors()
-//     // const authorOfPost = authors.find(author => author._id === author._id)
-//     //and if author exists insert post
-
-//     const { originalname, buffer } = req.file
-//     await saveCoverImage(originalname, buffer)
-//     const newPost = {
-//       ...req.body,
-//       cover: `http://localhost:3001/${originalname}`,
-//       _id: uniqid(),
-//       createdAt: new Date()
-//     };
-//     const posts = await getPosts();
-//     posts.push(newPost);
-//     await savePosts(posts);
-//     res.status(201).send(newPost);
-//   } catch (error) {
-//     next(error);
-//   }
-// });
 
 blogPostsRouter.post("/", async (req, res, next) => {
   try {
@@ -82,31 +60,6 @@ blogPostsRouter.post("/", async (req, res, next) => {
   }
 })
 
-// blogPostsRouter.put("/:postId", multer().single("articleCover"), async (req, res, next) => {
-//   try {
-//     const { originalname } = req.file
-//     const posts = await getPosts();
-//     const postIndex = posts.findIndex(post => post._id === req.params.postId);
-//     if(postIndex !== -1){
-//       const previousPost = posts[postIndex]
-//       const updatedPost = {
-//         previousPost,
-//         ...req.body,
-//         cover: `http://localhost:3001/${originalname}`,
-//         updatedAt: new Date()
-//       }
-//       posts[postIndex] = updatedPost
-//       await savePosts(posts)
-//       res.send(updatedPost)
-
-//     } else {
-//       next(createHttpError(404), `No post found with id of`)
-//     }
-//   } catch (error) {
-//     next(error);
-//   }
-// });
-
 blogPostsRouter.put("/:postId", async (req, res, next) => {
   try {
     const posts = await getPosts();
@@ -123,7 +76,40 @@ blogPostsRouter.put("/:postId", async (req, res, next) => {
       res.send(updatedPost)
 
     } else {
-      next(createHttpError(404), `No post found with id of`)
+      next(createHttpError(404), `No post found with id of ${req.params.postId}`)
+    }
+  } catch (error) {
+    next(error)
+  }
+})
+
+blogsPostsRouter.put("/:postId/cover", multer().single("cover"), async(req, res, next) => {
+  try {
+    // ***************************** \\
+    const { originalname, buffer } = req.file
+    const extension = extname(originalname)
+    const fileName = `${req.params.authorId}${extension}`
+    const link = `http://localhost:3001/${fileName}`
+    req.file = link
+    saveAuthorPicture(fileName, buffer)
+    // ***************************** \\
+
+    const posts = await getPosts();
+    const postIndex = posts.findIndex((post) => post._id === req.params.postId);
+    if(postIndex !== -1){
+      const previousPost = posts[postIndex]
+      const changedPost = {
+        ...previousPost,
+        // ...req.body, -> no need because I'm only changing the cover
+        cover: req.file,
+        updatedAt: new Date()
+      }
+      posts[postIndex] = changedPost
+      await savePosts(posts)
+      res.send(changedPost)
+
+    } else {
+      next(createHttpError(404), `No post found with id of ${req.params.postId}`)
     }
   } catch (error) {
     next(error)
