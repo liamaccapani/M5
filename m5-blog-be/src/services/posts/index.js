@@ -3,6 +3,7 @@ import express from "express";
 import multer from "multer";
 import { getAuthors, getPosts, savePosts, saveCoverImage } from "../../lib/fs-tools.js";
 // import { getAuthors, saveAuthors } from "../../lib/fs-tools.js";
+import { extname } from "path";
 import uniqid from "uniqid";
 import { param } from "express-validator";
 
@@ -11,7 +12,7 @@ const blogPostsRouter = express.Router();
 blogPostsRouter.get("/", async (req, res, next) => {
   try {
     const posts = await getPosts();
-    console.log(posts);
+    // console.log(posts);
     res.send(posts);
   } catch (error) {
     next(error);
@@ -83,15 +84,15 @@ blogPostsRouter.put("/:postId", async (req, res, next) => {
   }
 })
 
-blogsPostsRouter.put("/:postId/cover", multer().single("cover"), async(req, res, next) => {
+blogPostsRouter.put("/:postId/cover", multer().single("cover"), async(req, res, next) => {
   try {
     // ***************************** \\
     const { originalname, buffer } = req.file
     const extension = extname(originalname)
-    const fileName = `${req.params.authorId}${extension}`
+    const fileName = `${req.params.postId}${extension}`
     const link = `http://localhost:3001/${fileName}`
     req.file = link
-    saveAuthorPicture(fileName, buffer)
+    saveCoverImage(fileName, buffer)
     // ***************************** \\
 
     const posts = await getPosts();

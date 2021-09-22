@@ -6,3 +6,12 @@ export const authorValidation = [
   body("email").exists().withMessage("Email is a mandatory field!").isEmail().withMessage("Please send a valid email!"),
   body("dateOfBirth").exists().withMessage("Date of Birth is a mandatory field!")
 ]
+
+/* 
+* .custom(async (email) => {
+    const existingUser = await repo.getOneBy({ email })
+    if (existingUser) {
+      throw new Error('Email already in use')
+    }
+  })
+*/

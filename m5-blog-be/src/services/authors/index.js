@@ -3,6 +3,8 @@ import express from "express";
 import { getAuthors, saveAuthors, saveAuthorPicture } from "../../lib/fs-tools.js";
 import uniqid from "uniqid";
 import multer from "multer";
+import { extname } from "path";
+import { authorValidation } from "./authorValidation.js";
 
 const authorsRouter = express.Router();
 
@@ -73,7 +75,7 @@ authorsRouter.put("/:authorId", async (req, res, next) => {
         _id: req.params.authorId,
       };
 
-      previousAuthorData = changedAuthor;
+      authors[authorIndex] = changedAuthor;
       await saveAuthors(authors);
       res.send(changedAuthor);
     }
@@ -96,16 +98,15 @@ authorsRouter.put("/:authorId/avatar", multer().single("avatar"), async(req, res
     // ***************************** \\
 
     const authors = await getAuthors()
-    const authorIndex = authors.findIndex(
-      (author) => author._id === req.params.authorId);
-      
+    const authorIndex = authors.findIndex((author) => author._id === req.params.authorId);
+
     if (!authorIndex === -1) {
       next(
         createHttpError(404),
         `Invalid Author id, no author with _id:${req.params.authorId}`
       );
     } else {
-      let previousAuthorData = authors[authorIndex];
+      const previousAuthorData = authors[authorIndex];
       const changedAuthor = {
         ...previousAuthorData,
         // ...req.body, -> no need because I'm only changing the avatar
@@ -114,7 +115,7 @@ authorsRouter.put("/:authorId/avatar", multer().single("avatar"), async(req, res
         _id: req.params.authorId,
       };
 
-      previousAuthorData = changedAuthor;
+      authors[authorIndex] = changedAuthor;
       await saveAuthors(authors);
       res.send(changedAuthor);
     }
