@@ -9,12 +9,24 @@ import cors from "cors";
 
 
 const server = express()
-const port = 3001
+const port = process.env.PORT || 3001
 const publicFolderPath = join(process.cwd(), "public")
+
+// CORS
+const whiteList = [process.env.FE_LOCAL_URL, process.env.FE_DEPLOYED_URL]
+const corsOptions = {
+    origin: function(origin, next){
+        if(!origin || whiteList.indexOf(origin) !== -1) {
+            next(null, true)
+        } else {
+            next(new Error(`Forbidden origin: ${origin}`))
+        }
+    }
+}
 
 
 // GLOBAL MIDDLEWARES
-server.use(cors())
+server.use(cors(corsOptions))
 server.use(express.json())
 server.use(express.static(publicFolderPath))
 

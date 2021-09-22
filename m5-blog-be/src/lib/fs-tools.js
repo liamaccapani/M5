@@ -9,7 +9,7 @@ const { readJSON, writeJSON, writeFile} = fs
 // need to go a folder up -> data (sibling folder) + join it with authors / posts files
 const dataFolderPath = join(dirname(fileURLToPath(import.meta.url)), "../data")
 
-const publicFolderPath = join(process.cwd(), "public")
+// 
 
 const authorsJson = join(dataFolderPath, "authors.json")
 const postsJson = join(dataFolderPath, "posts.json")
@@ -29,8 +29,11 @@ export const savePosts = (fileContent) => writeJSON(postsJson, fileContent)
 
 
 // FILES
+// const publicFolderPath = join(process.cwd(), "public")
 // a) AVATAR
-export const saveAuthorPicture = (name, bufferContent) => writeFile(join(publicFolderPath, name), bufferContent)
+const publicFolderAuthorsPath = join(process.cwd(), "public/img/authors")
+export const saveAuthorPicture = (name, bufferContent) => writeFile(join(publicFolderAuthorsPath, name), bufferContent)
 
 // b) COVER IMG
-export const saveCoverImage = (name, bufferContent) => writeFile(join(publicFolderPath, name), bufferContent)
+const publicFolderPostsPath = join(process.cwd(), "public/img/posts")
+export const saveCoverImage = (name, bufferContent) => writeFile(join(publicFolderPostsPath, name), bufferContent)
